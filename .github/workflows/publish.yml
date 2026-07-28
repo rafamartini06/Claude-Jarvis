@@ -1,0 +1,81 @@
+name: Publicar painel
+
+# Fonte da verdade: Dashboard/db/*.json.
+# Este workflow valida a base, regenera Dashboard/dados.js e publica o painel
+# no repositorio jarvis-painel. A Vercel republica sozinha a partir de la.
+#
+# Ninguem edita dados.js a mao. Ninguem commita no jarvis-painel a mao.
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'Dashboard/db/**'
+      - 'Dashboard/painel/**'
+      - 'scripts/build-dados.mjs'
+      - '.github/workflows/publish.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: publicar-painel
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout jarvis-crm
+        uses: actions/checkout@v4
+
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validar base
+        run: node scripts/validate-db.mjs
+
+      - name: Gerar dados.js
+        run: node scripts/build-dados.mjs
+
+      - name: Commitar dados.js regenerado
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- Dashboard/dados.js; then
+            echo "dados.js sem alteracao."
+          else
+            git add Dashboard/dados.js
+            git commit -m "chore: regenera dados.js a partir de Dashboard/db"
+            git push origin master
+          fi
+
+      - name: Checkout jarvis-painel
+        uses: actions/checkout@v4
+        with:
+          repository: rafamartini06/jarvis-painel
+          token: ${{ secrets.PAINEL_TOKEN }}
+          path: painel
+
+      - name: Sincronizar painel
+        run: |
+          # Preserva o .git do destino; substitui o restante pelo painel gerado.
+          find painel -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+          cp -r Dashboard/painel/. painel/
+          cp Dashboard/dados.js painel/dados.js
+
+      - name: Publicar no jarvis-painel
+        working-directory: painel
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Painel sem alteracao. Nada a publicar."
+          else
+            git commit -m "publicar painel a partir de jarvis-crm@${GITHUB_SHA::7}"
+            git push
+          fi

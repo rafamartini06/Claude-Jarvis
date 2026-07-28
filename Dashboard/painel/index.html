@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JARVIS — Painel</title>
+<style>
+  :root { color-scheme: light dark; --bg:#fff; --fg:#111; --mut:#666; --line:#e4e4e7; --acc:#0f62fe; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0d0d0f; --fg:#f2f2f2; --mut:#9a9aa2; --line:#26262b; --acc:#6ea8ff; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:2rem 1.25rem; background:var(--bg); color:var(--fg);
+         font:15px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; }
+  h1 { font-size:1.5rem; margin:0 0 .25rem; letter-spacing:-.01em; }
+  .sub { color:var(--mut); font-size:.875rem; margin:0 0 2rem; }
+  h2 { font-size:1rem; margin:2rem 0 .75rem; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:.75rem; }
+  .card { border:1px solid var(--line); border-radius:10px; padding:.875rem 1rem; }
+  .card b { display:block; font-size:1.5rem; font-variant-numeric:tabular-nums; }
+  .card span { color:var(--mut); font-size:.8125rem; }
+  .wrap { overflow-x:auto; border:1px solid var(--line); border-radius:10px; }
+  table { border-collapse:collapse; width:100%; font-size:.875rem; }
+  th, td { text-align:left; padding:.6rem .875rem; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th { color:var(--mut); font-weight:600; font-size:.75rem; text-transform:uppercase; letter-spacing:.04em; }
+  tr:last-child td { border-bottom:0; }
+  td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  .tag { display:inline-block; padding:.1rem .5rem; border-radius:99px; background:var(--acc); color:#fff; font-size:.75rem; }
+  .vazio { color:var(--mut); padding:1.25rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>JARVIS — Painel</h1>
+  <p class="sub" id="rodape">Carregando…</p>
+  <div class="cards" id="cards"></div>
+  <h2>Saldo alto em conta</h2>
+  <div class="wrap" id="alertas"></div>
+  <h2>Próximos contatos</h2>
+  <div class="wrap" id="contatos"></div>
+</main>
+
+<script src="dados.js"></script>
+<script>
+(function () {
+  var d = window.DADOS || {};
+  var brl = function (v) {
+    return (typeof v === 'number')
+      ? v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+      : '—';
+  };
+  var esc = function (s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  };
+
+  var clientes = d.clientes || [];
+  var fin = d.financeiro || [];
+  var aportes = d.aportes || [];
+
+  var plTotal = fin.reduce(function (s, c) { return s + (c.pl || 0); }, 0);
+  var cards = [
+    ['Clientes', clientes.length],
+    ['Aportes', aportes.length],
+    ['PL total', brl(plTotal)],
+    ['Reuniões', (d.reunioes || []).length]
+  ];
+  document.getElementById('cards').innerHTML = cards.map(function (c) {
+    return '<div class="card"><b>' + esc(c[1]) + '</b><span>' + esc(c[0]) + '</span></div>';
+  }).join('');
+
+  // Gatilho do briefing: saldo > 3% do PL e > R$ 10.000.
+  var altos = fin.filter(function (c) {
+    return c.saldoConta > 0.03 * c.pl && c.saldoConta > 10000;
+  });
+  document.getElementById('alertas').innerHTML = altos.length
+    ? '<table><thead><tr><th>Cliente</th><th class="num">Saldo em conta</th><th class="num">PL</th><th class="num">% do PL</th></tr></thead><tbody>'
+      + altos.map(function (c) {
+          return '<tr><td>' + esc(c.cliente) + '</td><td class="num">' + brl(c.saldoConta)
+            + '</td><td class="num">' + brl(c.pl) + '</td><td class="num">'
+            + (c.pl ? (100 * c.saldoConta / c.pl).toFixed(1) : '—') + '%</td></tr>';
+        }).join('')
+      + '</tbody></table>'
+    : '<p class="vazio">Nenhum saldo acima do gatilho.</p>';
+
+  document.getElementById('contatos').innerHTML = clientes.length
+    ? '<table><thead><tr><th>Cliente</th><th>Nível</th><th>Último contato</th><th>Próximo contato</th></tr></thead><tbody>'
+      + clientes.map(function (c) {
+          return '<tr><td>' + esc(c.nome) + '</td><td><span class="tag">' + esc(c.nivel)
+            + '</span></td><td>' + esc(c.ultimoContato || '—') + '</td><td>'
+            + esc(c.proximoContato || '—') + '</td></tr>';
+        }).join('')
+      + '</tbody></table>'
+    : '<p class="vazio">Base de clientes vazia.</p>';
+
+  document.getElementById('rodape').textContent = d.geradoEm
+    ? 'Gerado em ' + new Date(d.geradoEm).toLocaleString('pt-BR')
+    : 'Aguardando primeira geração da base.';
+})();
+</script>
+</body>
+</html>

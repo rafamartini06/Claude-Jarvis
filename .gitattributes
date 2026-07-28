@@ -1,0 +1,14 @@
+* text=auto eol=lf
+
+# A base e sempre LF + UTF-8. Evita PowerShell/Windows corromperem o diff.
+Dashboard/db/**/*.json text eol=lf working-tree-encoding=UTF-8
+*.md                   text eol=lf
+*.mjs                  text eol=lf
+*.js                   text eol=lf
+*.yml                  text eol=lf
+
+# Artefato gerado: some do diff de review.
+Dashboard/dados.js linguist-generated=true
+
+*.xlsx binary
+*.xls  binary

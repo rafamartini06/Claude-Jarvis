@@ -1,0 +1,14 @@
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Planilhas de saldo baixadas do Drive. A base versionada e o JSON, nao o XLSX.
+*.xlsx
+*.xls
+!Dashboard/db/**
+
+# Saidas locais
+*.log
+.env
+.env.*
+!.env.example

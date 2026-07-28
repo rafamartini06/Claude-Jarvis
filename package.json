@@ -1,0 +1,15 @@
+{
+  "name": "jarvis-crm",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Base de dados e automacao de publicacao do painel JARVIS - AUVP Capital",
+  "scripts": {
+    "validate": "node scripts/validate-db.mjs",
+    "build": "node scripts/build-dados.mjs",
+    "dias-uteis": "node scripts/dias-uteis.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
