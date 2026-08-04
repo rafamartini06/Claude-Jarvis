@@ -88,7 +88,9 @@ git push -u origin master      # 5. a Action publica sozinha
 - Aporte efetivado entra com status **`"Concluído"`**. D+1/D+2 não deixa pendente.
 - Valor de aporte não informado fica **em branco** + observação padrão. Não estimar.
 - Todo aporte conta como contato → atualizar `ultimoContato` / `proximoContato`.
-- Cadência: **N1 +7** · **N2 +15** · **N3 +30** dias úteis. Sempre dia útil.
+- Cadência: **N1 +7** · **N2 +15** · **N3 +30** dias corridos. Única exceção:
+  se cair em fim de semana, empurra para a próxima segunda-feira (feriados não
+  deslocam).
 - Não avançar contato com demanda em aberto.
 
 ---

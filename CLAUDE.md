@@ -36,7 +36,7 @@ trabalho legítimo de outro PC do Rafael que ainda não foi commitado.
 |---|---|
 | `node scripts/validate-db.mjs` | Valida sintaxe, formato 1-objeto-por-linha e UTF-8 de todos os JSON |
 | `node scripts/build-dados.mjs` | Regenera `Dashboard/dados.js` — **uso local/diagnóstico apenas**; em produção quem roda é a Action |
-| `node scripts/dias-uteis.mjs <YYYY-MM-DD> <n>` | Soma `n` dias úteis a uma data |
+| `node scripts/dias-uteis.mjs <YYYY-MM-DD> <n>` | Soma `n` dias corridos a uma data; só ajusta se cair em fim de semana |
 
 `build-dados.mjs` existe para depuração. **Não** commitar o `dados.js` gerado por
 ele; o artefato de produção é o da GitHub Action.

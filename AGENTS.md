@@ -116,14 +116,17 @@ Ao registrar um aporte, atualizar também `clients.json`:
 
 | Nível | Próximo contato |
 |---|---|
-| N1 | +7 dias úteis |
-| N2 | +15 dias úteis |
-| N3 | +30 dias úteis |
+| N1 | +7 dias corridos |
+| N2 | +15 dias corridos |
+| N3 | +30 dias corridos |
 
 Regras:
 
-- **Sempre dia útil.** Se a data calculada cair em fim de semana ou feriado,
-  empurrar para o próximo dia útil.
+- **Dias corridos, não dias úteis.** A contagem soma dias corridos a partir do
+  último contato.
+- **Única exceção: fim de semana.** Se a data calculada cair em sábado ou
+  domingo, empurrar para a próxima segunda-feira. Feriados **não** deslocam a
+  data.
 - Aporte conta como contato.
 - Parabéns / aniversário dado **também** conta como contato.
 - Ambos atualizam `ultimoContato` e `proximoContato`.
