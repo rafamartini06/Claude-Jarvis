@@ -125,6 +125,35 @@ if (clientes) {
   });
 }
 
+// Tipo de campo: alguns campos precisam ser sempre string (nunca array/objeto),
+// senao quebram o dashboard.html (ex.: clean() faz (s||"").replace(...), que
+// lanca TypeError se `s` for array/objeto, travando o clique na ficha do
+// cliente sem nenhum erro visivel na tela). Caso real: meetings.json.resumo
+// gravado como ["texto"] em vez de "texto" (25/08/2026), corrigido em
+// 28/08/2026 apos travar a ficha de 3 clientes.
+const CAMPOS_STRING = {
+  'meetings.json': ['resumo', 'titulo', 'categoria', 'proxima'],
+  'clients.json': ['pendencia', 'resumo', 'obs', 'alertas', 'patAcomp'],
+  'activities.json': ['proximoPasso', 'descricao', 'valor'],
+  'contributions.json': ['titulo', 'total'],
+};
+for (const [nomeArquivo, campos] of Object.entries(CAMPOS_STRING)) {
+  const dados = conteudo.get(join(DB, nomeArquivo));
+  if (!dados) continue;
+  dados.forEach((reg, i) => {
+    for (const campo of campos) {
+      const v = reg[campo];
+      if (v != null && typeof v !== 'string') {
+        erros.push(
+          `${nomeArquivo}[${i}] (${reg.cliente ?? reg.nome ?? '?'}): campo "${campo}" ` +
+            `deveria ser string, veio ${Array.isArray(v) ? 'array' : typeof v}. ` +
+            'Isso trava o clique na ficha do cliente no painel.',
+        );
+      }
+    }
+  });
+}
+
 for (const a of avisos) console.warn(`AVISO  ${a}`);
 for (const e of erros) console.error(`ERRO   ${e}`);
 
