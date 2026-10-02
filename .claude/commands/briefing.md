@@ -23,8 +23,16 @@ de quando é o último snapshot.
 
 ## Passo 2 — Levantar o acionável
 
-Ler a base e apurar apenas estes seis blocos:
+A base e as regras vivas ficam no repositório `jarvis-crm` (`Dashboard/db/`,
+`AGENTS.md`); em divergência, as de lá prevalecem.
 
+Ler a base e apurar apenas estes blocos:
+
+0. **Follow-ups** — `activities.json` com `tipo:"Follow-up"` abertos:
+   atrasados, hoje e amanhã, no topo. Antes de listar, ler o WhatsApp do
+   cliente (conector Jamel Street) e fechar o que já foi resolvido desde o
+   fechamento de ontem ("feito", "aceitei", "aprovados") — se for aporte,
+   registrar em `contributions.json` e avançar o contato.
 1. **Saldo alto em conta** — saldo `> 3% do PL` **e** `> R$ 10.000`.
 2. **Vencimentos de RF próximos.**
 3. **Aniversários.**
@@ -45,7 +53,7 @@ Omitir blocos vazios — não escrever "nada a reportar" para cada um.
 
 ### Bloqueios
 
-WhatsApp, Calendar ou Drive indisponíveis: **declarar o bloqueio explicitamente**
+WhatsApp (conector Jamel Street), Calendar ou Drive indisponíveis: **declarar o bloqueio explicitamente**
 no topo do briefing e seguir com o que a base permite. Nunca preencher a lacuna
 com suposição.
 

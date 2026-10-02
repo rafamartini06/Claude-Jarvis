@@ -31,7 +31,7 @@ UTF-8 sempre. Ver `CLAUDE.md` §4 sobre PowerShell e acentuação.
 | `demandaAberta` | boolean | `true` trava o avanço de `proximoContato`. |
 | `observacoes` | string | Livre. Opcional. |
 
-Cadência: N1 `+7` dias úteis · N2 `+15` · N3 `+30`. Ver `AGENTS.md` §5.
+Cadência: N1 `+15` dias corridos · N2 `+15` · N3 `+30` (fim de semana empurra para segunda). Ver `AGENTS.md` §5.
 
 ---
 

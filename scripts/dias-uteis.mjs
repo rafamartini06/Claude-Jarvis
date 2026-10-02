@@ -5,9 +5,9 @@
 //   node scripts/dias-uteis.mjs 2026-07-27 7
 //   node scripts/dias-uteis.mjs 2026-07-27 N2
 //
-// Cadencia: N1 = 7, N2 = 15, N3 = 30 dias corridos.
+// Cadencia: N1 = 15, N2 = 15, N3 = 30 dias corridos.
 
-const CADENCIA = { N1: 7, N2: 15, N3: 30 };
+const CADENCIA = { N1: 15, N2: 15, N3: 30 };
 
 const DIA = 86400000;
 

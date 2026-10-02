@@ -116,7 +116,7 @@ Ao registrar um aporte, atualizar também `clients.json`:
 
 | Nível | Próximo contato |
 |---|---|
-| N1 | +7 dias corridos |
+| N1 | +15 dias corridos (quinzenal desde 19/08/2026) |
 | N2 | +15 dias corridos |
 | N3 | +30 dias corridos |
 
@@ -136,8 +136,12 @@ Regras:
 Utilitário:
 
 ```bash
-node scripts/dias-uteis.mjs 2026-07-27 7
+node scripts/dias-uteis.mjs 2026-07-27 N1
 ```
+
+Férias do Rafael (12/10 a 28/10/2026, retorno 29/10): contato que cair no
+período vai para o primeiro dia útil livre a partir de 29/10, no máximo 5
+clientes por dia.
 
 ---
 
@@ -171,10 +175,32 @@ Procedimento:
   - aniversários;
   - contatos vencidos / hoje / próximos;
   - agenda;
-  - demandas concretas.
+  - demandas concretas;
+  - **follow-ups** atrasados / hoje / amanhã (`activities.json`, `tipo:"Follow-up"`).
 - **Não** trazer monitoramentos passivos nem itens sem ação.
-- Se WhatsApp, Calendar ou Drive não estiverem disponíveis: **informar
+- WhatsApp é lido pelo conector **Jamel Street** (`list_whatsapp_chats` /
+  `get_whatsapp_messages`, instância `rafael-di-martini`), só leitura. Se
+  WhatsApp, Calendar ou Drive não estiverem disponíveis: **informar
   claramente o bloqueio** e seguir com o que a base permite.
+
+## 7b. Fonte operacional e follow-ups
+
+A base de dados e as regras operacionais vivas estão no repositório
+**`jarvis-crm`** (`AGENTS.md`, `CLAUDE.md` e `.claude/commands/*.md` de lá
+**prevalecem** sobre este repositório em caso de divergência). Em especial:
+
+- **Ordem só com Expiração + "Rejeitar"/"Aceitar" não é aporte** até o
+  cliente confirmar. Antes de abrir follow-up, ler o WhatsApp do cliente: se
+  ele já disse "feito"/"aceitei"/"aprovados", lançar direto como `Concluído`
+  (`jarvis-crm/AGENTS.md` §4 e §4g).
+- **Follow-up** = ação curta e datada que não pode se perder (ordem não
+  aceita, aceite pendente, promessa ao cliente, pedido sem resposta). Formato,
+  prazos e regras: `jarvis-crm/AGENTS.md` §4g. Aparece no card
+  "🔁 Follow-ups" do painel.
+- **Fechar dia** inclui a varredura completa de follow-ups e do WhatsApp do
+  dia (`.claude/commands/fechar-dia.md`).
+- O WhatsApp grava número brasileiro **sem o 9** depois do DDD — comparar
+  telefones sem o 9 antes de concluir que o contato não é cliente.
 
 ---
 
