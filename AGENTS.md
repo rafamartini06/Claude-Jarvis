@@ -197,6 +197,10 @@ A base de dados e as regras operacionais vivas estão no repositório
   aceita, aceite pendente, promessa ao cliente, pedido sem resposta). Formato,
   prazos e regras: `jarvis-crm/AGENTS.md` §4g. Aparece no card
   "🔁 Follow-ups" do painel.
+- **Follow-up recorrente** (campo `recorrencia`): compromisso mensal fixo. Ao
+  concluir, criar na hora a ocorrência do mês seguinte. Ativos: Hilton Rocha
+  (relatório fee-based até o dia 10, antecipando fim de semana/feriado) e
+  Marcus Marques (relatórios BTG no 1º dia útil, sem fim de semana nem feriado).
 - **Fechar dia** inclui a varredura completa de follow-ups e do WhatsApp do
   dia (`.claude/commands/fechar-dia.md`).
 - O WhatsApp grava número brasileiro **sem o 9** depois do DDD — comparar

@@ -26,7 +26,10 @@ Aceitar também "fechar dia". O roteiro completo e vigente está no repositório
      e pedidos de cliente sem resposta viram follow-up com prazo; confirmações
      ("feito", "aceitei") fecham o follow-up correspondente;
    - casar telefone sem o 9 depois do DDD e pelo contexto da conversa antes de
-     marcar um contato como não identificado.
+     marcar um contato como não identificado;
+   - recorrentes (🔁 Hilton fee-based até dia 10; Marcus relatórios BTG no 1º
+     dia útil): conferir no grupo do cliente se o envio do mês saiu; se saiu,
+     concluir e criar a ocorrência do mês seguinte.
 4. **Consolidar** — atualizar o bloco de pendências do `jarvis-crm/CLAUDE.md`.
 5. **Publicar** — validar, revisar o `git diff`, commit + push no `jarvis-crm`.
    Informar o hash, os follow-ups fechados, os criados (com prazo) e os atrasados.
