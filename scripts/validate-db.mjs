@@ -87,14 +87,21 @@ for (const arquivo of alvos()) {
 }
 
 // Integridade referencial.
+// Dois formatos de base convivem: o deste repositorio (clients com `id`,
+// aportes com `valor`/`observacao`) e o do jarvis-crm (clientes chaveados por
+// `nome`, aportes com `total`/`detalhe`/`obs[]`). Cada regra detecta o formato
+// pelo proprio registro.
 const clientes = conteudo.get(join(DB, 'clients.json'));
 if (clientes) {
-  const ids = new Set(clientes.map((c) => c.id));
+  const porId = clientes.some((c) => c.id != null);
+  const chave = porId ? 'id' : 'nome';
+  const ids = new Set(clientes.map((c) => c[chave]));
 
   const vistos = new Set();
   for (const c of clientes) {
-    if (vistos.has(c.id)) erros.push(`clients.json: id duplicado "${c.id}".`);
-    vistos.add(c.id);
+    if (c[chave] == null || c[chave] === '') erros.push(`clients.json: cliente sem "${chave}".`);
+    else if (vistos.has(c[chave])) erros.push(`clients.json: ${chave} duplicado "${c[chave]}".`);
+    vistos.add(c[chave]);
   }
 
   for (const [arquivo, dados] of conteudo) {
@@ -105,25 +112,61 @@ if (clientes) {
       }
     });
   }
-
-  // Aportes: status e valor ausente.
-  const aportes = conteudo.get(join(DB, 'contributions.json')) ?? [];
-  const OBS = 'Valor financeiro não informado pelo Rafael.';
-  aportes.forEach((a, i) => {
-    if (a.status !== 'Concluído') {
-      erros.push(
-        `contributions.json[${i}] (${a.cliente ?? a.clienteId}): status "${a.status}" ` +
-          'invalido. Todo aporte efetivado entra como "Concluido".',
-      );
-    }
-    if ((a.valor === '' || a.valor == null) && a.observacao !== OBS) {
-      erros.push(
-        `contributions.json[${i}] (${a.cliente ?? a.clienteId}): valor em branco exige ` +
-          `observacao "${OBS}".`,
-      );
-    }
-  });
 }
+
+// Aportes: status e valor ausente.
+// contributions.json guarda so aporte efetivado (status "Concluído"). Intencao,
+// ordem nao aceita ou cancelada vai para activities.json (Follow-up/historico).
+const aportes = conteudo.get(join(DB, 'contributions.json')) ?? [];
+const OBS = 'Valor financeiro não informado pelo Rafael.';
+// Regra do valor em branco vale a partir da configuracao do repositorio
+// (28/07/2026). Registros anteriores vieram do Notion sem esse campo: so aviso.
+const INICIO_REGRA = '2026-07-28';
+const isoData = (s) => {
+  const m = /^(\d{2})\/(\d{2})\/(\d{4})/.exec(s ?? '');
+  return m ? `${m[3]}-${m[2]}-${m[1]}` : (/^\d{4}-\d{2}-\d{2}/.test(s ?? '') ? s.slice(0, 10) : '');
+};
+const temValor = (a) => {
+  if ('valor' in a) return !(a.valor === '' || a.valor == null);
+  if (String(a.total ?? '').trim()) return true;
+  if ((a.detalhe ?? []).some((d) => String(d.valor ?? '').trim())) return true;
+  return /(R\$|US\$|U\$)\s?\d|\b\d+\s?(k|mil)\b/i.test(a.titulo ?? '');
+};
+const temObs = (a) =>
+  a.observacao === OBS || (Array.isArray(a.obs) ? a.obs : [a.obs]).some((o) => String(o ?? '').includes(OBS));
+let legadoSemValor = 0;
+aportes.forEach((a, i) => {
+  const quem = a.cliente ?? a.clienteId;
+  if (a.status !== 'Concluído') {
+    erros.push(
+      `contributions.json[${i}] (${quem}): status "${a.status}" invalido. ` +
+        'Aporte efetivado entra como "Concluído"; o resto e Follow-up em activities.json.',
+    );
+  }
+  if (!temValor(a) && !temObs(a)) {
+    const d = isoData(a.data);
+    if (d && d < INICIO_REGRA) legadoSemValor++;
+    else erros.push(`contributions.json[${i}] (${quem}): valor em branco exige observacao "${OBS}".`);
+  }
+});
+if (legadoSemValor) {
+  avisos.push(`contributions.json: ${legadoSemValor} aporte(s) anteriores a 28/07/2026 sem valor (legado do Notion).`);
+}
+
+// Follow-ups (AGENTS.md §4g do jarvis-crm): prazo valido, acao e origem
+// preenchidas; fechado exige data de conclusao.
+const atividades = conteudo.get(join(DB, 'activities.json')) ?? [];
+const ACOES = ['Conferir execução', 'Reenviar ordem', 'Aceitar no BTG', 'Enviar ao cliente', 'Responder cliente', 'Identificar'];
+const ORIGENS = ['Aporte', 'WhatsApp', 'Reunião', 'Rafael'];
+atividades.forEach((a, i) => {
+  if (!/^follow-?up$/i.test(String(a.tipo ?? '').trim())) return;
+  const quem = `activities.json[${i}] (${a.cliente || '?'})`;
+  if (!isoData(a.prazo)) erros.push(`${quem}: follow-up sem prazo DD/MM/AAAA.`);
+  if (!ACOES.includes(a.acao)) erros.push(`${quem}: follow-up com acao "${a.acao ?? ''}" fora da lista (${ACOES.join(' | ')}).`);
+  if (!ORIGENS.includes(a.origem)) erros.push(`${quem}: follow-up com origem "${a.origem ?? ''}" fora da lista (${ORIGENS.join(' | ')}).`);
+  if (a.status === 'Concluído' && !isoData(a.conclusao)) erros.push(`${quem}: follow-up concluido sem data em "conclusao".`);
+  if (!a.cliente) avisos.push(`${quem}: follow-up sem cliente (nao aparece na ficha).`);
+});
 
 // Tipo de campo: alguns campos precisam ser sempre string (nunca array/objeto),
 // senao quebram o dashboard.html (ex.: clean() faz (s||"").replace(...), que

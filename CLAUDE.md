@@ -34,7 +34,7 @@ trabalho legítimo de outro PC do Rafael que ainda não foi commitado.
 
 | Comando | Efeito |
 |---|---|
-| `node scripts/validate-db.mjs` | Valida sintaxe, formato 1-objeto-por-linha e UTF-8 de todos os JSON |
+| `node scripts/validate-db.mjs` | Valida sintaxe, formato 1-objeto-por-linha e UTF-8 de todos os JSON, aportes (só `Concluído`; valor ou obs padrão) e follow-ups. Entende o formato deste repo e o do jarvis-crm (rodar a partir da raiz do jarvis-crm) |
 | `node scripts/build-dados.mjs` | Regenera `Dashboard/dados.js` — **uso local/diagnóstico apenas**; em produção quem roda é a Action |
 | `node scripts/dias-uteis.mjs <YYYY-MM-DD> <n>` | Soma `n` dias corridos a uma data; só ajusta se cair em fim de semana |
 
