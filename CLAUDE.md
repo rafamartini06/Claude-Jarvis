@@ -113,5 +113,6 @@ _(a preencher)_
   e seguir com o que a base local permite. Não simular o dado ausente.
   WhatsApp é lido pelo conector **Jamel Street** (só leitura) e alimenta a
   varredura de follow-ups do fechar dia (`AGENTS.md` §7b).
-- Ordem só com Expiração + "Rejeitar"/"Aceitar" **não é aporte** até o cliente
-  confirmar; vira follow-up (`AGENTS.md` §7b).
+- Tabela enviada pelo Rafael = **aporte realizado** (lançar `Concluído`); a
+  conferência no WhatsApp é feita no fechar dia e só então vira follow-up
+  "Conferir execução" se o cliente não interagiu (`AGENTS.md` §7b).

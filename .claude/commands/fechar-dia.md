@@ -18,8 +18,9 @@ Aceitar também "fechar dia". O roteiro completo e vigente está no repositório
    - revisar cada follow-up aberto (`tipo:"Follow-up"`) e fechar só com
      evidência (WhatsApp, extrato BTG ou confirmação do Rafael); aporte
      confirmado vai para `contributions.json` como `Concluído` e avança o contato;
-   - ordem do dia só com Expiração + "Rejeitar"/"Aceitar" sem confirmação vira
-     follow-up "Conferir execução"/"Aceitar no BTG" para D+1 útil — nunca aporte;
+   - aporte lançado hoje (tabela do Rafael = aporte realizado): ler o WhatsApp do
+     cliente; sem nenhuma interação depois do envio → follow-up "Conferir
+     execução" para D+1 útil (aporte continua lançado); ordem expirada → reverter;
    - ler o WhatsApp do dia (conector Jamel Street: `list_whatsapp_chats` +
      `get_whatsapp_messages`, instância `rafael-di-martini`, página 1 de cada chat
      com mensagem de hoje): promessas do Rafael ("te envio amanhã", "em 3 dias")

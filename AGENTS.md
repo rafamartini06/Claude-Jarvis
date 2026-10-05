@@ -189,9 +189,10 @@ A base de dados e as regras operacionais vivas estão no repositório
 **`jarvis-crm`** (`AGENTS.md`, `CLAUDE.md` e `.claude/commands/*.md` de lá
 **prevalecem** sobre este repositório em caso de divergência). Em especial:
 
-- **Ordem só com Expiração + "Rejeitar"/"Aceitar" não é aporte** até o
-  cliente confirmar. Antes de abrir follow-up, ler o WhatsApp do cliente: se
-  ele já disse "feito"/"aceitei"/"aprovados", lançar direto como `Concluído`
+- **Tabela enviada pelo Rafael = aporte realizado** (Rafael, 05/10/2026): lançar
+  `Concluído` na hora, mesmo com Expiração + "Rejeitar"/"Aceitar". No fechar dia,
+  ler o WhatsApp do cliente: sem nenhuma interação depois do envio →
+  follow-up "Conferir execução" D+1; ordem expirada → reverter
   (`jarvis-crm/AGENTS.md` §4 e §4g).
 - **Follow-up** = ação curta e datada que não pode se perder (ordem não
   aceita, aceite pendente, promessa ao cliente, pedido sem resposta). Formato,
