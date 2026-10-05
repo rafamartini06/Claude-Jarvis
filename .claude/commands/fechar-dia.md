@@ -20,7 +20,9 @@ Aceitar também "fechar dia". O roteiro completo e vigente está no repositório
      confirmado vai para `contributions.json` como `Concluído` e avança o contato;
    - aporte lançado hoje (tabela do Rafael = aporte realizado): ler o WhatsApp do
      cliente; sem nenhuma interação depois do envio → follow-up "Conferir
-     execução" para D+1 útil (aporte continua lançado); ordem expirada → reverter;
+     execução" para D+1 útil (aporte continua lançado); cliente disse que não conseguiu
+     aceitar ou ordem expirada → reverter o aporte e retomar o contato para o
+     próximo dia útil + "Reenviar ordem";
    - ler o WhatsApp do dia (conector Jamel Street: `list_whatsapp_chats` +
      `get_whatsapp_messages`, instância `rafael-di-martini`, página 1 de cada chat
      com mensagem de hoje): promessas do Rafael ("te envio amanhã", "em 3 dias")

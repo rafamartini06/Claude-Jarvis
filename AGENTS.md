@@ -192,7 +192,8 @@ A base de dados e as regras operacionais vivas estão no repositório
 - **Tabela enviada pelo Rafael = aporte realizado** (Rafael, 05/10/2026): lançar
   `Concluído` na hora, mesmo com Expiração + "Rejeitar"/"Aceitar". No fechar dia,
   ler o WhatsApp do cliente: sem nenhuma interação depois do envio →
-  follow-up "Conferir execução" D+1; ordem expirada → reverter
+  follow-up "Conferir execução" D+1; cliente disse que não conseguiu aceitar
+  (ou ordem expirada) → reverter e retomar o contato para o próximo dia útil
   (`jarvis-crm/AGENTS.md` §4 e §4g).
 - **Follow-up** = ação curta e datada que não pode se perder (ordem não
   aceita, aceite pendente, promessa ao cliente, pedido sem resposta). Formato,
