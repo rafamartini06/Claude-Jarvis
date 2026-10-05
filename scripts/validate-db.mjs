@@ -114,6 +114,26 @@ if (clientes) {
   }
 }
 
+// Cadencia: no maximo 5 clientes com o mesmo proximoContato (regra do Rafael).
+if (clientes) {
+  const porDia = new Map();
+  for (const c of clientes) {
+    const d = String(c.proximoContato ?? '').trim().replace(/^0(\d) /, '$1 ');
+    if (d) porDia.set(d, (porDia.get(d) ?? 0) + 1);
+  }
+  const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+  const hoje = new Date().toISOString().slice(0, 10);
+  const iso = (d) => {
+    const m = /^(\d{1,2}) de (\S+) de (\d{4})$/.exec(d);
+    const mes = m ? MESES.indexOf(m[2].toLowerCase()) + 1 : 0;
+    return mes ? `${m[3]}-${String(mes).padStart(2, '0')}-${m[1].padStart(2, '0')}` : '';
+  };
+  for (const [d, n] of porDia) {
+    // So agenda futura: atraso acumulado no passado e backlog, nao agendamento.
+    if (n > 5 && iso(d) >= hoje) erros.push(`clients.json: ${n} clientes com proximoContato "${d}" (maximo 5 por dia).`);
+  }
+}
+
 // Aportes: status e valor ausente.
 // contributions.json guarda so aporte efetivado (status "Concluído"). Intencao,
 // ordem nao aceita ou cancelada vai para activities.json (Follow-up/historico).
