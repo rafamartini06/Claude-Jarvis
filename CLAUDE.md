@@ -97,7 +97,11 @@ se um cliente pediu para não ser contatado em determinado período, o
 - Observação: ...
 -->
 
-_(a preencher)_
+- **Férias do Rafael:** 13/10 a 28/10/2026 (retorno 29/10; 12/10 é feriado). Ponto
+  focal no período: Geovany Santos, (62) 98578-0044. Contato que cair nesse período
+  vai para o primeiro dia útil livre a partir de 29/10 (máx. 5 por dia).
+- **Conectores:** `list_whatsapp_chats` do Jamel Street pode vir com
+  `last_message_at` defasado; consultar o chat de cada cliente direto.
 
 ---
 
