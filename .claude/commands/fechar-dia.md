@@ -30,6 +30,9 @@ Aceitar também "fechar dia". O roteiro completo e vigente está no repositório
      ("feito", "aceitei") fecham o follow-up correspondente;
    - casar telefone sem o 9 depois do DDD e pelo contexto da conversa antes de
      marcar um contato como não identificado;
+   - campanhas de aviso a todos os clientes (férias até 09/10; termos da conta
+     internacional BTG até 02/11): varrer o WhatsApp de todos os clientes ativos,
+     marcar quem já recebeu o aviso e listar os pendentes no follow-up da campanha;
    - recorrentes (🔁 Hilton fee-based até dia 10; Marcus relatórios BTG no 1º
      dia útil): conferir no grupo do cliente se o envio do mês saiu; se saiu,
      concluir e criar a ocorrência do mês seguinte.
