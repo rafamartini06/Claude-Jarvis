@@ -155,8 +155,21 @@ const temValor = (a) => {
 const temObs = (a) =>
   a.observacao === OBS || (Array.isArray(a.obs) ? a.obs : [a.obs]).some((o) => String(o ?? '').includes(OBS));
 let legadoSemValor = 0;
+// Aporte precisa apontar para o `nome` exato de uma ficha (jarvis-crm). O painel
+// casa aporte x saldo por esse nome; ficha conjunta ("A / B") e conta vinculada
+// (campo `empresa`) lancam sempre na ficha, nunca no nome solto da conta.
+const nomesFicha = clientes && !clientes.some((c) => c.id != null) ? new Set(clientes.map((c) => c.nome)) : null;
+const INICIO_NOME_EXATO = '2026-10-29';
+let legadoSemFicha = 0;
 aportes.forEach((a, i) => {
   const quem = a.cliente ?? a.clienteId;
+  if (nomesFicha && a.cliente && isoData(a.data) < INICIO_NOME_EXATO && !nomesFicha.has(a.cliente)) legadoSemFicha++;
+  if (nomesFicha && a.cliente && isoData(a.data) >= INICIO_NOME_EXATO && !nomesFicha.has(a.cliente)) {
+    erros.push(
+      `contributions.json[${i}] (${quem}): cliente nao e o nome exato de uma ficha em clients.json. ` +
+        'Lance na ficha (ficha conjunta "A / B" ou ficha da conta vinculada em `empresa`).',
+    );
+  }
   if (a.status !== 'Concluído') {
     erros.push(
       `contributions.json[${i}] (${quem}): status "${a.status}" invalido. ` +
@@ -169,6 +182,9 @@ aportes.forEach((a, i) => {
     else erros.push(`contributions.json[${i}] (${quem}): valor em branco exige observacao "${OBS}".`);
   }
 });
+if (legadoSemFicha) {
+  avisos.push(`contributions.json: ${legadoSemFicha} aporte(s) anteriores a 29/10/2026 com cliente que nao e nome exato de ficha (ex.: conta sem ficha, casada pelo nome da conta).`);
+}
 if (legadoSemValor) {
   avisos.push(`contributions.json: ${legadoSemValor} aporte(s) anteriores a 28/07/2026 sem valor (legado do Notion).`);
 }
